@@ -3,6 +3,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
+import { AdminPosts } from './pages/AdminPosts';
+import { AdminCategories } from './pages/AdminCategories';
+import { AdminUsers } from './pages/AdminUsers';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -19,6 +22,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/posts"
+        element={
+          <ProtectedRoute>
+            <AdminPosts />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/categories"
+        element={
+          <ProtectedRoute>
+            <AdminCategories />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute>
+            <AdminUsers />
           </ProtectedRoute>
         }
       />
