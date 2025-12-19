@@ -91,3 +91,7 @@ export const authorizeMinRole = (minRole: string) => {
     next();
   };
 };
+
+// Aliases for convenience
+export const authenticateToken = authenticate;
+export const requireAdmin = authorize('admin');

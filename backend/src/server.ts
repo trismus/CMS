@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import postsRouter from './routes/posts.js';
 import authRouter from './routes/auth.js';
 import adminRouter from './routes/admin.js';
+import settingsRouter from './routes/settings.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/settings', settingsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

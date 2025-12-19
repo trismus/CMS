@@ -64,3 +64,14 @@ export const postsAPI = {
   getPostBySlug: (slug: string) => api.get(`/posts/${slug}`),
   createPost: (data: any) => api.post('/posts', data),
 };
+
+// Settings API
+export const settingsAPI = {
+  getAll: () => api.get('/settings'),
+  getByCategory: (category: string) => api.get(`/settings/category/${category}`),
+  get: (key: string) => api.get(`/settings/${key}`),
+  update: (key: string, value: string) => api.put(`/settings/${key}`, { value }),
+  updateMultiple: (settings: Record<string, string>) => api.put('/settings/bulk', { settings }),
+  create: (data: any) => api.post('/settings', data),
+  delete: (key: string) => api.delete(`/settings/${key}`),
+};

@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { AdminPosts } from './pages/AdminPosts';
 import { AdminCategories } from './pages/AdminCategories';
 import { AdminUsers } from './pages/AdminUsers';
+import { AdminSettings } from './pages/AdminSettings';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -46,6 +47,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AdminUsers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <ProtectedRoute>
+            <AdminSettings />
           </ProtectedRoute>
         }
       />
