@@ -15,7 +15,10 @@
       "Bash(git push:*)",
       "Bash(docker-compose restart:*)",
       "Bash(docker-compose exec:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix: Entferne alte JSX Dateien und korrigiere Vite Setup\n\nÄnderungen:\n- Alte App.jsx und main.jsx gelöscht (nur TypeScript verwenden)\n- index.html korrigiert: main.jsx → main.tsx\n- Title aktualisiert: \"MeinCMS - Content Management System\"\n\nDies behebt das Problem mit der Standard-Vite-Seite.\nJetzt werden die neuen TypeScript-Komponenten korrekt geladen.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(openssl req:*)"
     ]
   }
 }

@@ -24,7 +24,6 @@ services:
     image: mailhog/mailhog:latest
     container_name: meincms_mailhog
     ports:
-      - "1025:1025"  # SMTP server
       - "8025:8025"  # Web UI
     logging:
       driver: 'none'
@@ -49,9 +48,7 @@ services:
       SMTP_USER: ""
       SMTP_PASS: ""
       EMAIL_FROM: noreply@meincms.local
-      APP_URL: http://localhost:5173
-    ports:
-      - "3000:3000"
+      APP_URL: https://localhost
     depends_on:
       db:
         condition: service_healthy
@@ -67,11 +64,23 @@ services:
       dockerfile: Dockerfile
     container_name: meincms_frontend
     environment:
-      VITE_API_URL: http://localhost:3000
-    ports:
-      - "5173:5173"
+      VITE_API_URL: /api
     depends_on:
       - backend
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: meincms_nginx
+    ports:
+      - "80:80"      # HTTP
+      - "443:443"    # HTTPS
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped

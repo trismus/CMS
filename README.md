@@ -47,9 +47,10 @@ Ein modernes, professionelles Content Management System gebaut mit React, Node.j
 - 🔒 **bcrypt** - Passwort-Hashing
 - 📧 **Nodemailer** - Email-Versand
 
-### DevOps
+### DevOps & Infrastructure
 - 🐳 **Docker** - Containerisierung
 - 🎼 **Docker Compose** - Multi-Container Orchestrierung
+- 🌐 **Nginx** - Reverse Proxy mit SSL
 - 📬 **MailHog** - SMTP Testing Server
 
 ## Installation
@@ -69,12 +70,14 @@ docker-compose up --build
 ```
 
 Die Applikation ist dann verfügbar unter:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:3000
-- **MailHog Web UI**: http://localhost:8025 (Email Testing)
-- **PostgreSQL**: localhost:5432
+- **Anwendung (HTTPS)**: https://localhost - Hauptzugang über nginx
+- **Anwendung (HTTP)**: http://localhost - Redirect zu HTTPS
+- **MailHog Web UI**: http://localhost:8025 - Email Testing
+- **PostgreSQL**: localhost:5432 - Datenbank (nur intern)
 
 Die Datenbank-Migrationen und Test-Benutzer werden automatisch beim Start erstellt.
+
+**🔐 SSL-Zertifikat:** Die Anwendung verwendet ein selbstsigniertes SSL-Zertifikat. Dein Browser zeigt eine Warnung - klicke auf "Erweitert" und "Trotzdem fortfahren". Dies ist normal für Development.
 
 **Datenbankpersistenz:** Die PostgreSQL-Daten werden im lokalen `./db` Ordner gespeichert und bleiben auch nach dem Stoppen der Container erhalten.
 
@@ -310,6 +313,17 @@ MeinCMS/
 │   ├── .env.example              # Env Template
 │   └── package.json
 │
+├── nginx/                         # Nginx Reverse Proxy
+│   ├── conf.d/                   # Nginx Konfiguration
+│   │   └── default.conf          # Server Config
+│   ├── ssl/                      # SSL Zertifikate
+│   │   ├── cert.pem              # SSL Zertifikat
+│   │   ├── key.pem               # Private Key
+│   │   └── openssl.cnf           # OpenSSL Config
+│   ├── Dockerfile                # nginx Container
+│   ├── .dockerignore
+│   └── README.md                 # nginx Dokumentation
+│
 ├── db/                            # PostgreSQL Daten (automatisch)
 ├── docker-compose.yml             # Multi-Container Setup
 ├── package.json                   # Root Dependencies
@@ -389,6 +403,47 @@ POST /api/auth/reset-password
   "newPassword": "neuesPasswort123"
 }
 ```
+
+## 🌐 Nginx Reverse Proxy & SSL
+
+### Funktionen
+MeinCMS nutzt nginx als Reverse Proxy mit folgenden Features:
+- **HTTPS** mit selbstsignierten SSL-Zertifikaten
+- **HTTP zu HTTPS** automatischer Redirect
+- **WebSocket Support** für Vite Hot Module Replacement
+- **Gzip Compression** für bessere Performance
+- **Sicherheits-Header** (X-Frame-Options, X-XSS-Protection, etc.)
+
+### Zugriff
+- **Port 80 (HTTP)**: Leitet automatisch zu HTTPS weiter
+- **Port 443 (HTTPS)**: Hauptzugang zur Anwendung
+- **Routing**:
+  - `/` → Frontend (React/Vite)
+  - `/api/*` → Backend (Express API)
+
+### SSL-Zertifikate
+
+#### Development
+Die mitgelieferten SSL-Zertifikate sind selbstsigniert und gültig für:
+- `localhost`
+- `meincms.local`
+- `127.0.0.1`
+
+**Browser-Warnung umgehen:**
+1. Öffne https://localhost
+2. Browser zeigt Sicherheitswarnung
+3. Klicke auf "Erweitert" / "Advanced"
+4. Klicke auf "Trotzdem fortfahren" / "Proceed anyway"
+
+Dies ist normal für selbstsignierte Zertifikate in Development.
+
+#### Production
+Für Production empfehlen wir **Let's Encrypt**:
+```bash
+certbot certonly --standalone -d yourdomain.com
+```
+
+Mehr Informationen: [nginx/README.md](./nginx/README.md)
 
 ## 🎨 Screenshots
 
