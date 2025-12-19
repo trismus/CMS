@@ -1,29 +1,56 @@
-# MeinCMS
+# MeinCMS 🚀
 
-Ein modernes Content Management System gebaut mit React, Node.js und PostgreSQL.
+Ein modernes, professionelles Content Management System gebaut mit React, Node.js und PostgreSQL. Vollständig containerisiert mit Docker für einfache Entwicklung und Deployment.
 
-## Features
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![React](https://img.shields.io/badge/React-19-61dafb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)
 
-- React Frontend mit Vite
-- Express.js Backend mit TypeScript
-- PostgreSQL Datenbank
-- RESTful API
-- Beiträge, Kategorien und Tags
-- Benutzerverwaltung
-
-## Technologie-Stack
+## ✨ Features
 
 ### Frontend
-- React 19
-- React Router
-- Axios für API-Aufrufe
-- Vite als Build-Tool
+- 🎨 **Moderne Landingpage** mit Hero, Tech Stack, Feature-Showcases und Footer
+- 🔐 **Authentifizierung** mit Quick-Login für Demo-Accounts
+- 📊 **Admin-Dashboard** mit Statistiken und Schnellzugriff
+- 📝 **Post-Management** - Vollständiges CRUD mit Modal-Editor
+- 📁 **Kategorie-Verwaltung** - Organisiere Inhalte mit Icons
+- 👥 **User-Management** - Benutzer mit Rollen und Status verwalten
+- 🎯 **Sidebar-Navigation** für intuitive Admin-Bedienung
+- 📱 **Responsive Design** für alle Bildschirmgrößen
 
 ### Backend
-- Node.js mit Express
-- TypeScript
-- PostgreSQL
-- CORS-Unterstützung
+- 🔒 **JWT-Authentifizierung** mit sicheren Tokens
+- 👑 **4 Benutzerrollen** (Admin, Operator, User, Guest)
+- 📧 **Email-Verifizierung** mit automatischen Emails
+- 🔑 **Passwort-Reset** Funktion
+- 📬 **MailHog Integration** für Email-Testing
+- 🛡️ **Rollenbasierte Zugriffskontrolle** (RBAC)
+- 🗄️ **PostgreSQL** mit automatischen Migrationen
+- 📊 **Admin-API** für Dashboard-Statistiken
+
+## 🛠️ Technologie-Stack
+
+### Frontend
+- ⚛️ **React 19** - Moderne UI-Bibliothek
+- 📘 **TypeScript** - Type-Safety
+- 🚀 **Vite** - Schnelles Build-Tool
+- 🔀 **React Router** - Client-side Routing
+- 📡 **Axios** - HTTP Client
+
+### Backend
+- 🟢 **Node.js 20** - Runtime Environment
+- ⚡ **Express.js** - Web Framework
+- 📘 **TypeScript** - Type-Safety
+- 🐘 **PostgreSQL 16** - Relationale Datenbank
+- 🔐 **JWT** - Token-basierte Authentifizierung
+- 🔒 **bcrypt** - Passwort-Hashing
+- 📧 **Nodemailer** - Email-Versand
+
+### DevOps
+- 🐳 **Docker** - Containerisierung
+- 🎼 **Docker Compose** - Multi-Container Orchestrierung
+- 📬 **MailHog** - SMTP Testing Server
 
 ## Installation
 
@@ -42,11 +69,12 @@ docker-compose up --build
 ```
 
 Die Applikation ist dann verfügbar unter:
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3000
-- PostgreSQL: localhost:5432
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+- **MailHog Web UI**: http://localhost:8025 (Email Testing)
+- **PostgreSQL**: localhost:5432
 
-Die Datenbank-Migrationen werden automatisch beim Start ausgeführt.
+Die Datenbank-Migrationen und Test-Benutzer werden automatisch beim Start erstellt.
 
 **Datenbankpersistenz:** Die PostgreSQL-Daten werden im lokalen `./db` Ordner gespeichert und bleiben auch nach dem Stoppen der Container erhalten.
 
@@ -227,29 +255,67 @@ Bei Docker-Start werden automatisch vier Test-Benutzer erstellt:
   }
   ```
 
-## Projektstruktur
+## 📂 Projektstruktur
 
 ```
 MeinCMS/
-├── frontend/              # React Frontend
+├── frontend/                      # React Frontend
 │   ├── src/
+│   │   ├── components/           # React Komponenten
+│   │   │   ├── AdminLayout.tsx   # Admin Layout Wrapper
+│   │   │   ├── AdminSidebar.tsx  # Admin Navigation
+│   │   │   ├── LoginWidget.tsx   # Login Formular
+│   │   │   └── Navbar.tsx        # Hauptnavigation
+│   │   ├── context/              # React Context
+│   │   │   └── AuthContext.tsx   # Authentication State
+│   │   ├── pages/                # Seiten-Komponenten
+│   │   │   ├── Home.tsx          # Landingpage
+│   │   │   ├── Dashboard.tsx     # Admin Dashboard
+│   │   │   ├── AdminPosts.tsx    # Post-Management
+│   │   │   ├── AdminCategories.tsx # Kategorie-Management
+│   │   │   ├── AdminUsers.tsx    # User-Management
+│   │   │   └── Login.tsx         # Login-Seite
+│   │   ├── services/             # API Services
+│   │   │   └── api.ts            # Axios API Client
+│   │   ├── App.tsx               # Haupt-App mit Routing
+│   │   ├── main.tsx              # Entry Point
+│   │   └── index.css             # Global Styles
 │   ├── Dockerfile
+│   ├── index.html
 │   └── package.json
-├── backend/              # Express Backend
+│
+├── backend/                       # Express Backend
 │   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── migrations/
-│   │   ├── models/
-│   │   ├── server.ts
-│   │   └── db.ts
+│   │   ├── controllers/          # Route Handler
+│   │   │   ├── authController.ts     # Auth Logik
+│   │   │   ├── emailController.ts    # Email Funktionen
+│   │   │   ├── adminController.ts    # Admin API
+│   │   │   └── postsController.ts    # Posts CRUD
+│   │   ├── middleware/           # Express Middleware
+│   │   │   └── auth.ts           # JWT Verification & RBAC
+│   │   ├── routes/               # API Routes
+│   │   │   ├── auth.ts           # Auth Endpoints
+│   │   │   ├── admin.ts          # Admin Endpoints
+│   │   │   └── posts.ts          # Posts Endpoints
+│   │   ├── services/             # Business Logic
+│   │   │   └── emailService.ts   # Email-Versand
+│   │   ├── migrations/           # Datenbank Migrationen
+│   │   │   ├── migrate.ts        # Migration Runner
+│   │   │   ├── seed.ts           # Test-Daten
+│   │   │   └── 001_complete_schema.sql
+│   │   ├── server.ts             # Express Server
+│   │   └── db.ts                 # PostgreSQL Client
 │   ├── Dockerfile
-│   ├── docker-entrypoint.sh
+│   ├── docker-entrypoint.sh      # Startup Script
+│   ├── .env.example              # Env Template
 │   └── package.json
-├── db/                   # PostgreSQL Daten (wird automatisch erstellt)
-├── docker-compose.yml    # Docker Orchestrierung
-├── package.json          # Root package.json
-└── README.md
+│
+├── db/                            # PostgreSQL Daten (automatisch)
+├── docker-compose.yml             # Multi-Container Setup
+├── package.json                   # Root Dependencies
+├── README.md                      # Diese Datei
+├── AUTH.md                        # Auth Dokumentation
+└── FEATURES.md                    # Feature-Liste
 ```
 
 ## Datenbankschema
@@ -261,15 +327,126 @@ MeinCMS/
 - `tags` - Tags
 - `post_tags` - Verknüpfungstabelle für Posts und Tags
 
-## Nächste Schritte
+## 🎯 Admin-Bereich
 
-- [ ] Benutzer-Authentifizierung implementieren
-- [ ] Admin-Dashboard erstellen
-- [ ] Rich-Text-Editor für Beiträge
-- [ ] Medien-Upload
-- [ ] Suchfunktion
+Nach dem Login als Admin hast du Zugriff auf folgende Bereiche:
+
+### Dashboard (`/admin`)
+- **Statistik-Karten**: Benutzer, Posts, Kategorien
+- **Schnellzugriff**: Direkte Links zu allen Admin-Bereichen
+- **Übersicht**: Aktuelle Systemzahlen auf einen Blick
+
+### Post-Management (`/admin/posts`)
+- **Erstellen**: Neue Posts mit Titel, Inhalt, Kategorie
+- **Bearbeiten**: Bestehende Posts ändern
+- **Löschen**: Posts entfernen
+- **Status**: Draft/Published Workflow
+- **Grid-Ansicht**: Übersichtliche Kartendarstellung
+
+### Kategorie-Verwaltung (`/admin/categories`)
+- **Erstellen**: Neue Kategorien mit Icons
+- **Slug-Generator**: Automatische URL-freundliche Namen
+- **Beschreibungen**: Detaillierte Kategorie-Infos
+- **Post-Zähler**: Anzahl der Posts pro Kategorie
+
+### User-Management (`/admin/users`)
+- **Übersicht**: Alle registrierten Benutzer
+- **Suche**: Filtere nach Username oder Email
+- **Rollen**: Admin, Operator, User, Guest
+- **Status**: Aktiv, Verifiziert
+- **Löschen**: Benutzer entfernen (nicht sich selbst)
+
+## 📧 Email-System
+
+### MailHog
+Alle Emails werden von MailHog abgefangen und können unter http://localhost:8025 eingesehen werden:
+- Email-Verifizierung
+- Passwort-Reset
+- Willkommens-Emails
+
+### Email-Funktionen
+```bash
+# Email-Verifizierung anfordern
+POST /api/auth/request-verification
+Authorization: Bearer <token>
+
+# Email verifizieren
+POST /api/auth/verify-email
+{
+  "token": "verification-token"
+}
+
+# Passwort-Reset anfordern
+POST /api/auth/request-password-reset
+{
+  "email": "user@example.com"
+}
+
+# Passwort zurücksetzen
+POST /api/auth/reset-password
+{
+  "token": "reset-token",
+  "newPassword": "neuesPasswort123"
+}
+```
+
+## 🎨 Screenshots
+
+### Startseite
+- Hero-Sektion mit Feature-Cards
+- Tech Stack Übersicht
+- Feature-Previews mit Dashboard und Editor
+- Test-Accounts Showcase
+- Call-to-Action und Footer
+
+### Admin-Dashboard
+- Moderne Sidebar-Navigation
+- Statistik-Cards mit Icons
+- Schnellzugriff-Buttons
+- Responsive für alle Geräte
+
+### Content-Management
+- Post-Editor mit Modal
+- Kategorie-Verwaltung
+- User-Tabelle mit Suche
+
+## 🔐 Sicherheit
+
+- **JWT Tokens**: Sichere Authentifizierung
+- **bcrypt Hashing**: Passwörter werden gehasht gespeichert
+- **RBAC**: Rollenbasierte Zugriffskontrolle
+- **Protected Routes**: Frontend-Routing-Schutz
+- **API Middleware**: Backend-Endpunkt-Schutz
+- **Token Expiration**: Automatische Token-Ablauf
+
+## 📚 Weitere Dokumentation
+
+- **[AUTH.md](./AUTH.md)** - Detaillierte Authentifizierungs-Dokumentation
+- **[FEATURES.md](./FEATURES.md)** - Vollständige Feature-Liste und Status
+
+## 🚀 Nächste Schritte
+
+- [x] Benutzer-Authentifizierung ✅
+- [x] Admin-Dashboard ✅
+- [x] Email-Verifizierung ✅
+- [x] Passwort-Reset ✅
+- [x] Post-Management ✅
+- [x] Kategorie-Verwaltung ✅
+- [ ] Rich-Text-Editor (WYSIWYG)
+- [ ] Medien-Upload und -Verwaltung
+- [ ] Erweiterte Suchfunktion
 - [ ] Kommentar-System
+- [ ] SEO-Optimierung
+- [ ] Performance-Monitoring
 
-## Lizenz
+## 🤝 Beiträge
 
-MIT
+Contributions sind willkommen! Bitte erstelle einen Pull Request oder öffne ein Issue.
+
+## 📝 Lizenz
+
+MIT License - siehe [LICENSE](LICENSE) für Details.
+
+---
+
+**Entwickelt mit ❤️ und [Claude Code](https://claude.com/claude-code)**
