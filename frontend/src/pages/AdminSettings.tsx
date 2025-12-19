@@ -1,37 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 import { useNavigate } from 'react-router-dom';
-import { settingsAPI } from '../services/api';
 import { AdminLayout } from '../components/AdminLayout';
 
-interface Setting {
-  key: string;
-  value: string;
-  category: string;
-  description: string;
-}
+// Liste verfügbarer Schriftarten
+const FONT_OPTIONS = [
+  { value: 'Inter, system-ui, sans-serif', label: 'Inter (Standard)' },
+  { value: 'Arial, sans-serif', label: 'Arial' },
+  { value: 'Helvetica, Arial, sans-serif', label: 'Helvetica' },
+  { value: 'Georgia, serif', label: 'Georgia' },
+  { value: '"Times New Roman", Times, serif', label: 'Times New Roman' },
+  { value: 'Verdana, sans-serif', label: 'Verdana' },
+  { value: '"Courier New", Courier, monospace', label: 'Courier New' },
+  { value: 'Roboto, sans-serif', label: 'Roboto' },
+  { value: '"Open Sans", sans-serif', label: 'Open Sans' },
+  { value: 'Lato, sans-serif', label: 'Lato' },
+  { value: 'Montserrat, sans-serif', label: 'Montserrat' },
+  { value: 'Poppins, sans-serif', label: 'Poppins' },
+];
+
+const FONT_WEIGHT_OPTIONS = [
+  { value: '300', label: 'Light (300)' },
+  { value: '400', label: 'Normal (400)' },
+  { value: '500', label: 'Medium (500)' },
+  { value: '600', label: 'Semi-Bold (600)' },
+  { value: '700', label: 'Bold (700)' },
+  { value: '800', label: 'Extra-Bold (800)' },
+];
 
 export const AdminSettings: React.FC = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
-  const [settings, setSettings] = useState<Record<string, Setting>>({});
-  const [loading, setLoading] = useState(true);
+  const { settings: contextSettings, updateSettings, applyCSSVariables } = useSettings();
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState('design');
 
   const [formData, setFormData] = useState({
-    // Design
+    // Design Colors
     primary_color: '#007bff',
     secondary_color: '#6c757d',
     accent_color: '#28a745',
     background_color: '#ffffff',
     text_color: '#333333',
 
+    // Header
+    header_background: '#ffffff',
+    header_text_color: '#333333',
+    header_height: '70',
+    header_logo_text: 'Base',
+
+    // Footer
+    footer_background: '#2c3e50',
+    footer_text_color: '#ecf0f1',
+
+    // Design Elements
+    button_radius: '4',
+    button_padding: '10px 20px',
+    card_radius: '8',
+    card_shadow: '0 2px 4px rgba(0,0,0,0.1)',
+    spacing_unit: '8',
+    container_max_width: '1200',
+
     // Typography
     font_family: 'Inter, system-ui, sans-serif',
     font_size_base: '16',
     heading_font: 'Inter, system-ui, sans-serif',
+    line_height: '1.6',
+    heading_weight: '600',
+    body_weight: '400',
 
     // General
     site_name: 'Base',
@@ -50,29 +89,13 @@ export const AdminSettings: React.FC = () => {
       return;
     }
 
-    fetchSettings();
-  }, [isAdmin, navigate]);
-
-  const fetchSettings = async () => {
-    try {
-      const response = await settingsAPI.getAll();
-      const settingsObj = response.data.settings;
-      setSettings(settingsObj);
-
-      // Update form data
-      const newFormData: any = {};
-      Object.keys(settingsObj).forEach(key => {
-        newFormData[key] = settingsObj[key].value;
-      });
-      setFormData(prev => ({ ...prev, ...newFormData }));
-    } catch (error) {
-      console.error('Failed to fetch settings:', error);
-    } finally {
-      setLoading(false);
+    // Load settings from context
+    if (Object.keys(contextSettings).length > 0) {
+      setFormData(prev => ({ ...prev, ...contextSettings }));
     }
-  };
+  }, [isAdmin, navigate, contextSettings]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -83,8 +106,10 @@ export const AdminSettings: React.FC = () => {
     setMessage('');
 
     try {
-      await settingsAPI.updateMultiple(formData);
-      setMessage('Einstellungen erfolgreich gespeichert!');
+      await updateSettings(formData);
+      // CSS-Variablen werden automatisch durch den Context aktualisiert
+      applyCSSVariables();
+      setMessage('Einstellungen erfolgreich gespeichert und angewendet!');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
       setMessage('Fehler beim Speichern der Einstellungen');
@@ -93,23 +118,12 @@ export const AdminSettings: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Lädt Einstellungen...</p>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout>
       <div className="settings-page">
         <div className="settings-header">
           <h1>Einstellungen</h1>
-          <p>Passe das Design und die Grundeinstellungen deiner Website an</p>
+          <p>Passe das Design und die Grundeinstellungen deiner Website an. Änderungen werden sofort live angewendet.</p>
         </div>
 
         {message && (
@@ -130,6 +144,18 @@ export const AdminSettings: React.FC = () => {
             onClick={() => setActiveTab('design')}
           >
             🎨 Design
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'header' ? 'active' : ''}`}
+            onClick={() => setActiveTab('header')}
+          >
+            📐 Header
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'footer' ? 'active' : ''}`}
+            onClick={() => setActiveTab('footer')}
+          >
+            📊 Footer
           </button>
           <button
             className={`tab-btn ${activeTab === 'typography' ? 'active' : ''}`}
@@ -155,9 +181,10 @@ export const AdminSettings: React.FC = () => {
           {/* Design Tab */}
           {activeTab === 'design' && (
             <div className="tab-content">
-              <h2>Farbschema</h2>
-              <p className="tab-description">Definiere die Hauptfarben deiner Website</p>
+              <h2>Farbschema & Design-Elemente</h2>
+              <p className="tab-description">Definiere die Hauptfarben und Design-Eigenschaften</p>
 
+              <h3>Hauptfarben</h3>
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="primary_color">
@@ -271,53 +298,331 @@ export const AdminSettings: React.FC = () => {
                   style={{ marginTop: '8px', maxWidth: '300px' }}
                 />
               </div>
+
+              <h3>Buttons</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="button_radius">Button Border Radius (px)</label>
+                  <input
+                    type="number"
+                    id="button_radius"
+                    name="button_radius"
+                    value={formData.button_radius}
+                    onChange={handleChange}
+                    min="0"
+                    max="50"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="button_padding">Button Padding</label>
+                  <input
+                    type="text"
+                    id="button_padding"
+                    name="button_padding"
+                    value={formData.button_padding}
+                    onChange={handleChange}
+                    placeholder="10px 20px"
+                  />
+                </div>
+              </div>
+
+              <h3>Cards & Container</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="card_radius">Card Border Radius (px)</label>
+                  <input
+                    type="number"
+                    id="card_radius"
+                    name="card_radius"
+                    value={formData.card_radius}
+                    onChange={handleChange}
+                    min="0"
+                    max="50"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="container_max_width">Container Max Width (px)</label>
+                  <input
+                    type="number"
+                    id="container_max_width"
+                    name="container_max_width"
+                    value={formData.container_max_width}
+                    onChange={handleChange}
+                    min="800"
+                    max="2000"
+                    step="100"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="card_shadow">Card Shadow (CSS)</label>
+                  <input
+                    type="text"
+                    id="card_shadow"
+                    name="card_shadow"
+                    value={formData.card_shadow}
+                    onChange={handleChange}
+                    placeholder="0 2px 4px rgba(0,0,0,0.1)"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="spacing_unit">Spacing Unit (px)</label>
+                  <input
+                    type="number"
+                    id="spacing_unit"
+                    name="spacing_unit"
+                    value={formData.spacing_unit}
+                    onChange={handleChange}
+                    min="4"
+                    max="24"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Header Tab */}
+          {activeTab === 'header' && (
+            <div className="tab-content">
+              <h2>Header-Einstellungen</h2>
+              <p className="tab-description">Konfiguriere Aussehen und Verhalten des Headers</p>
+
+              <div className="form-group">
+                <label htmlFor="header_logo_text">Logo Text</label>
+                <input
+                  type="text"
+                  id="header_logo_text"
+                  name="header_logo_text"
+                  value={formData.header_logo_text}
+                  onChange={handleChange}
+                  placeholder="Base"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="header_background">
+                    Header Hintergrundfarbe
+                    <span className="color-preview" style={{ backgroundColor: formData.header_background }}></span>
+                  </label>
+                  <input
+                    type="color"
+                    id="header_background"
+                    name="header_background"
+                    value={formData.header_background}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    value={formData.header_background}
+                    onChange={handleChange}
+                    name="header_background"
+                    placeholder="#ffffff"
+                    style={{ marginTop: '8px' }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="header_text_color">
+                    Header Textfarbe
+                    <span className="color-preview" style={{ backgroundColor: formData.header_text_color }}></span>
+                  </label>
+                  <input
+                    type="color"
+                    id="header_text_color"
+                    name="header_text_color"
+                    value={formData.header_text_color}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    value={formData.header_text_color}
+                    onChange={handleChange}
+                    name="header_text_color"
+                    placeholder="#333333"
+                    style={{ marginTop: '8px' }}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="header_height">Header Höhe (px)</label>
+                <input
+                  type="number"
+                  id="header_height"
+                  name="header_height"
+                  value={formData.header_height}
+                  onChange={handleChange}
+                  min="50"
+                  max="150"
+                />
+                <small>Empfohlen: 60-80px</small>
+              </div>
+            </div>
+          )}
+
+          {/* Footer Tab */}
+          {activeTab === 'footer' && (
+            <div className="tab-content">
+              <h2>Footer-Einstellungen</h2>
+              <p className="tab-description">Konfiguriere Aussehen des Footers</p>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="footer_background">
+                    Footer Hintergrundfarbe
+                    <span className="color-preview" style={{ backgroundColor: formData.footer_background }}></span>
+                  </label>
+                  <input
+                    type="color"
+                    id="footer_background"
+                    name="footer_background"
+                    value={formData.footer_background}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    value={formData.footer_background}
+                    onChange={handleChange}
+                    name="footer_background"
+                    placeholder="#2c3e50"
+                    style={{ marginTop: '8px' }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="footer_text_color">
+                    Footer Textfarbe
+                    <span className="color-preview" style={{ backgroundColor: formData.footer_text_color }}></span>
+                  </label>
+                  <input
+                    type="color"
+                    id="footer_text_color"
+                    name="footer_text_color"
+                    value={formData.footer_text_color}
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    value={formData.footer_text_color}
+                    onChange={handleChange}
+                    name="footer_text_color"
+                    placeholder="#ecf0f1"
+                    style={{ marginTop: '8px' }}
+                  />
+                </div>
+              </div>
             </div>
           )}
 
           {/* Typography Tab */}
           {activeTab === 'typography' && (
             <div className="tab-content">
-              <h2>Schriftarten & Größen</h2>
+              <h2>Schriftarten & Typografie</h2>
               <p className="tab-description">Konfiguriere die Typografie deiner Website</p>
 
               <div className="form-group">
                 <label htmlFor="font_family">Basis-Schriftart</label>
-                <input
-                  type="text"
+                <select
                   id="font_family"
                   name="font_family"
                   value={formData.font_family}
                   onChange={handleChange}
-                  placeholder="Inter, system-ui, sans-serif"
-                />
-                <small>Gebe mehrere Schriftarten als Fallback an, getrennt durch Komma</small>
+                >
+                  {FONT_OPTIONS.map(font => (
+                    <option key={font.value} value={font.value}>
+                      {font.label}
+                    </option>
+                  ))}
+                </select>
+                <small>Wird für normalen Text verwendet</small>
               </div>
 
               <div className="form-group">
                 <label htmlFor="heading_font">Überschriften-Schriftart</label>
-                <input
-                  type="text"
+                <select
                   id="heading_font"
                   name="heading_font"
                   value={formData.heading_font}
                   onChange={handleChange}
-                  placeholder="Inter, system-ui, sans-serif"
-                />
+                >
+                  {FONT_OPTIONS.map(font => (
+                    <option key={font.value} value={font.value}>
+                      {font.label}
+                    </option>
+                  ))}
+                </select>
+                <small>Wird für H1, H2, H3, etc. verwendet</small>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="font_size_base">Basis-Schriftgröße (px)</label>
-                <input
-                  type="number"
-                  id="font_size_base"
-                  name="font_size_base"
-                  value={formData.font_size_base}
-                  onChange={handleChange}
-                  min="12"
-                  max="24"
-                  placeholder="16"
-                />
-                <small>Empfohlen: 14-18px für optimale Lesbarkeit</small>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="font_size_base">Basis-Schriftgröße (px)</label>
+                  <input
+                    type="number"
+                    id="font_size_base"
+                    name="font_size_base"
+                    value={formData.font_size_base}
+                    onChange={handleChange}
+                    min="12"
+                    max="24"
+                  />
+                  <small>Empfohlen: 14-18px</small>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="line_height">Zeilenhöhe</label>
+                  <input
+                    type="number"
+                    id="line_height"
+                    name="line_height"
+                    value={formData.line_height}
+                    onChange={handleChange}
+                    min="1"
+                    max="3"
+                    step="0.1"
+                  />
+                  <small>Empfohlen: 1.4-1.8</small>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="heading_weight">Überschriften Schriftstärke</label>
+                  <select
+                    id="heading_weight"
+                    name="heading_weight"
+                    value={formData.heading_weight}
+                    onChange={handleChange}
+                  >
+                    {FONT_WEIGHT_OPTIONS.map(weight => (
+                      <option key={weight.value} value={weight.value}>
+                        {weight.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="body_weight">Text Schriftstärke</label>
+                  <select
+                    id="body_weight"
+                    name="body_weight"
+                    value={formData.body_weight}
+                    onChange={handleChange}
+                  >
+                    {FONT_WEIGHT_OPTIONS.map(weight => (
+                      <option key={weight.value} value={weight.value}>
+                        {weight.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           )}
@@ -414,7 +719,7 @@ export const AdminSettings: React.FC = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={saving} className="btn-save">
-              {saving ? 'Speichern...' : 'Einstellungen speichern'}
+              {saving ? 'Speichern...' : 'Einstellungen speichern & anwenden'}
             </button>
           </div>
         </form>
@@ -445,6 +750,7 @@ export const AdminSettings: React.FC = () => {
             gap: 8px;
             margin-bottom: 30px;
             border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
           }
 
           .tab-btn {
@@ -458,6 +764,7 @@ export const AdminSettings: React.FC = () => {
             color: #666;
             transition: all 0.2s;
             margin-bottom: -2px;
+            white-space: nowrap;
           }
 
           .tab-btn:hover {
@@ -481,6 +788,18 @@ export const AdminSettings: React.FC = () => {
             margin: 0 0 8px 0;
             font-size: 20px;
             color: #333;
+          }
+
+          .tab-content h3 {
+            margin: 30px 0 16px 0;
+            font-size: 16px;
+            color: #555;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 8px;
+          }
+
+          .tab-content h3:first-of-type {
+            margin-top: 20px;
           }
 
           .tab-description {
@@ -520,6 +839,7 @@ export const AdminSettings: React.FC = () => {
           .form-group input[type="text"],
           .form-group input[type="email"],
           .form-group input[type="number"],
+          .form-group select,
           .form-group textarea {
             width: 100%;
             padding: 10px 12px;
@@ -527,6 +847,11 @@ export const AdminSettings: React.FC = () => {
             border-radius: 4px;
             font-size: 14px;
             font-family: inherit;
+          }
+
+          .form-group select {
+            cursor: pointer;
+            background-color: white;
           }
 
           .form-group input[type="color"] {
