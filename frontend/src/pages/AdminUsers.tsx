@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../services/api';
 import { AdminLayout } from '../components/AdminLayout';
+import EditUserModal from '../components/EditUserModal';
 
 export const AdminUsers: React.FC = () => {
   const { user, isAdmin } = useAuth();
@@ -10,6 +11,8 @@ export const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -30,6 +33,23 @@ export const AdminUsers: React.FC = () => {
 
     fetchData();
   }, [isAdmin, navigate]);
+
+  const handleEditUser = async (userId: number) => {
+    try {
+      const response = await adminAPI.getUserById(userId);
+      setSelectedUser(response.data.user);
+      setShowEditModal(true);
+    } catch (error) {
+      alert('Fehler beim Laden des Benutzers');
+    }
+  };
+
+  const handleUpdateUser = async (id: number, data: any) => {
+    await adminAPI.updateUser(id, data);
+    // Refresh users list
+    const usersRes = await adminAPI.getUsers({ limit: 50 });
+    setUsers(usersRes.data.users);
+  };
 
   const handleDeleteUser = async (id: number) => {
     if (!confirm('Möchten Sie diesen Benutzer wirklich löschen?')) return;
@@ -138,14 +158,31 @@ export const AdminUsers: React.FC = () => {
                         </div>
                       </td>
                       <td>
-                        <button
-                          onClick={() => handleDeleteUser(u.id)}
-                          disabled={u.id === user?.id}
-                          className={`btn-delete ${u.id === user?.id ? 'disabled' : ''}`}
-                          title={u.id === user?.id ? 'Sie können sich nicht selbst löschen' : 'Benutzer löschen'}
-                        >
-                          Löschen
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button
+                            onClick={() => handleEditUser(u.id)}
+                            className="btn-edit"
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: '#007bff',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                            }}
+                          >
+                            Bearbeiten
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(u.id)}
+                            disabled={u.id === user?.id}
+                            className={`btn-delete ${u.id === user?.id ? 'disabled' : ''}`}
+                            title={u.id === user?.id ? 'Sie können sich nicht selbst löschen' : 'Benutzer löschen'}
+                          >
+                            Löschen
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -155,6 +192,17 @@ export const AdminUsers: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {showEditModal && selectedUser && (
+        <EditUserModal
+          user={selectedUser}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedUser(null);
+          }}
+          onUpdate={handleUpdateUser}
+        />
+      )}
     </AdminLayout>
   );
 };

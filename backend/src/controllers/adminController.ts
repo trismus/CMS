@@ -33,7 +33,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     // Get users
     const result = await query(
-      `SELECT id, username, email, role, is_active, is_verified, last_login, created_at, updated_at
+      `SELECT id, username, email, role, is_active, is_verified, last_login,
+              street, house_number, postal_code, city, phone,
+              created_at, updated_at
        FROM users
        ${whereClause}
        ORDER BY created_at DESC
@@ -62,7 +64,9 @@ export const getUserById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const result = await query(
-      `SELECT id, username, email, role, is_active, is_verified, last_login, created_at, updated_at
+      `SELECT id, username, email, role, is_active, is_verified, last_login,
+              street, house_number, postal_code, city, phone,
+              created_at, updated_at
        FROM users WHERE id = $1`,
       [id]
     );
@@ -129,7 +133,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { username, email, role, isActive, isVerified, password } = req.body;
+    const { username, email, role, isActive, isVerified, password, street, houseNumber, postalCode, city, phone } = req.body;
 
     // Check if user exists
     const existingUser = await query('SELECT id FROM users WHERE id = $1', [id]);
@@ -177,6 +181,31 @@ export const updateUser = async (req: Request, res: Response) => {
       params.push(passwordHash);
     }
 
+    if (street !== undefined) {
+      updates.push(`street = $${paramIndex++}`);
+      params.push(street);
+    }
+
+    if (houseNumber !== undefined) {
+      updates.push(`house_number = $${paramIndex++}`);
+      params.push(houseNumber);
+    }
+
+    if (postalCode !== undefined) {
+      updates.push(`postal_code = $${paramIndex++}`);
+      params.push(postalCode);
+    }
+
+    if (city !== undefined) {
+      updates.push(`city = $${paramIndex++}`);
+      params.push(city);
+    }
+
+    if (phone !== undefined) {
+      updates.push(`phone = $${paramIndex++}`);
+      params.push(phone);
+    }
+
     if (updates.length === 0) {
       return res.status(400).json({ error: 'No fields to update' });
     }
@@ -187,7 +216,8 @@ export const updateUser = async (req: Request, res: Response) => {
       `UPDATE users
        SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
        WHERE id = $${paramIndex}
-       RETURNING id, username, email, role, is_active, is_verified, updated_at`,
+       RETURNING id, username, email, role, is_active, is_verified,
+                 street, house_number, postal_code, city, phone, updated_at`,
       params
     );
 
