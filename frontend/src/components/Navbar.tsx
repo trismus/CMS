@@ -15,7 +15,7 @@ export const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <h1>MeinCMS</h1>
+          <h1>Base</h1>
         </div>
 
         <div className="navbar-menu">

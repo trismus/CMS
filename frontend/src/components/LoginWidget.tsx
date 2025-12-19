@@ -75,19 +75,19 @@ export const LoginWidget: React.FC = () => {
         <p>Quick Login (Demo):</p>
         <div className="quick-login-buttons">
           <button
-            onClick={() => quickLogin('admin@meincms.local', 'admin123')}
+            onClick={() => quickLogin('admin@base.local', 'admin123')}
             className="btn-demo admin"
           >
             Admin
           </button>
           <button
-            onClick={() => quickLogin('operator@meincms.local', 'operator123')}
+            onClick={() => quickLogin('operator@base.local', 'operator123')}
             className="btn-demo operator"
           >
             Operator
           </button>
           <button
-            onClick={() => quickLogin('user@meincms.local', 'user123')}
+            onClick={() => quickLogin('user@base.local', 'user123')}
             className="btn-demo user"
           >
             User

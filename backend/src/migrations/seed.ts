@@ -12,25 +12,25 @@ async function seedUsers() {
     const testUsers = [
       {
         username: 'admin',
-        email: 'admin@meincms.local',
+        email: 'admin@base.local',
         password: 'admin123',
         role: 'admin'
       },
       {
         username: 'operator',
-        email: 'operator@meincms.local',
+        email: 'operator@base.local',
         password: 'operator123',
         role: 'operator'
       },
       {
         username: 'user',
-        email: 'user@meincms.local',
+        email: 'user@base.local',
         password: 'user123',
         role: 'user'
       },
       {
         username: 'guest',
-        email: 'guest@meincms.local',
+        email: 'guest@base.local',
         password: 'guest123',
         role: 'guest'
       }

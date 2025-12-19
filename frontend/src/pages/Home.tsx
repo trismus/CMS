@@ -19,7 +19,7 @@ export const Home: React.FC = () => {
         <div className="home-hero">
           <div className="hero-content">
             <div className="hero-badge">🚀 Version 1.0</div>
-            <h1>Willkommen bei MeinCMS</h1>
+            <h1>Willkommen bei Base</h1>
             <p className="hero-subtitle">
               Das moderne Content Management System für professionelle Websites.
               Entwickelt mit React, Node.js und PostgreSQL für maximale Performance und Sicherheit.
@@ -198,28 +198,28 @@ export const Home: React.FC = () => {
               <div className="account-card admin-card">
                 <div className="account-icon">👑</div>
                 <h4>Administrator</h4>
-                <p className="account-email">admin@meincms.local</p>
+                <p className="account-email">admin@base.local</p>
                 <span className="password">admin123</span>
                 <p className="account-desc">Voller Zugriff auf alle Funktionen</p>
               </div>
               <div className="account-card operator-card">
                 <div className="account-icon">⚙️</div>
                 <h4>Operator</h4>
-                <p className="account-email">operator@meincms.local</p>
+                <p className="account-email">operator@base.local</p>
                 <span className="password">operator123</span>
                 <p className="account-desc">Content- und User-Management</p>
               </div>
               <div className="account-card user-card">
                 <div className="account-icon">👤</div>
                 <h4>User</h4>
-                <p className="account-email">user@meincms.local</p>
+                <p className="account-email">user@base.local</p>
                 <span className="password">user123</span>
                 <p className="account-desc">Eingeschränkte Berechtigungen</p>
               </div>
               <div className="account-card guest-card">
                 <div className="account-icon">🔓</div>
                 <h4>Guest</h4>
-                <p className="account-email">guest@meincms.local</p>
+                <p className="account-email">guest@base.local</p>
                 <span className="password">guest123</span>
                 <p className="account-desc">Nur Lese-Zugriff</p>
               </div>
@@ -231,7 +231,7 @@ export const Home: React.FC = () => {
         <div className="cta-section">
           <div className="container">
             <h2>Bereit loszulegen?</h2>
-            <p>Starte jetzt mit MeinCMS und erlebe modernes Content Management</p>
+            <p>Starte jetzt mit Base und erlebe modernes Content Management</p>
             <div className="cta-buttons">
               <a href="https://github.com/trismus/CMS" target="_blank" rel="noopener noreferrer" className="btn-cta primary">
                 📦 Zum GitHub Repo
@@ -248,7 +248,7 @@ export const Home: React.FC = () => {
           <div className="container">
             <div className="footer-content">
               <div className="footer-section">
-                <h3>MeinCMS</h3>
+                <h3>Base</h3>
                 <p>Modernes Content Management System</p>
                 <p className="footer-version">Version 1.0.0</p>
               </div>
@@ -281,7 +281,7 @@ export const Home: React.FC = () => {
               </div>
             </div>
             <div className="footer-bottom">
-              <p>© 2025 MeinCMS. Entwickelt mit Claude Code.</p>
+              <p>© 2025 Base. Entwickelt mit Claude Code.</p>
             </div>
           </div>
         </footer>

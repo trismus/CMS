@@ -36,7 +36,7 @@ export const AdminPosts: React.FC = () => {
       const mockPosts = [
         {
           id: 1,
-          title: 'Willkommen bei MeinCMS',
+          title: 'Willkommen bei Base',
           content: 'Dies ist der erste Beitrag in unserem neuen Content Management System...',
           excerpt: 'Einführung in unser neues CMS',
           category: 'Allgemein',

@@ -1,6 +1,6 @@
-# MeinCMS Frontend
+# Base Frontend
 
-Das Frontend von MeinCMS - eine moderne React-Anwendung mit TypeScript und Vite.
+Das Frontend von Base - eine moderne React-Anwendung mit TypeScript und Vite.
 
 ## 🛠️ Tech Stack
 

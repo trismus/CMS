@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'MeinCMS API is running' });
+  res.json({ status: 'ok', message: 'Base API is running' });
 });
 
 app.use('/api/auth', authRouter);

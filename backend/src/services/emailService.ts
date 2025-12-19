@@ -4,7 +4,7 @@ const SMTP_HOST = process.env.SMTP_HOST || 'localhost';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '1025');
 const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
-const EMAIL_FROM = process.env.EMAIL_FROM || 'noreply@meincms.local';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'noreply@base.local';
 const APP_URL = process.env.APP_URL || 'http://localhost:5173';
 
 const transporter = nodemailer.createTransport({
@@ -26,10 +26,10 @@ export const sendVerificationEmail = async (email: string, token: string, userna
   const mailOptions = {
     from: EMAIL_FROM,
     to: email,
-    subject: 'MeinCMS - Email verifizieren',
+    subject: 'Base - Email verifizieren',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Willkommen bei MeinCMS, ${username}!</h2>
+        <h2>Willkommen bei Base, ${username}!</h2>
         <p>Vielen Dank für deine Registrierung. Bitte verifiziere deine Email-Adresse, um deinen Account zu aktivieren.</p>
         <p>
           <a href="${verificationUrl}"
@@ -45,7 +45,7 @@ export const sendVerificationEmail = async (email: string, token: string, userna
       </div>
     `,
     text: `
-Willkommen bei MeinCMS, ${username}!
+Willkommen bei Base, ${username}!
 
 Bitte verifiziere deine Email-Adresse:
 ${verificationUrl}
@@ -69,7 +69,7 @@ export const sendPasswordResetEmail = async (email: string, token: string, usern
   const mailOptions = {
     from: EMAIL_FROM,
     to: email,
-    subject: 'MeinCMS - Passwort zurücksetzen',
+    subject: 'Base - Passwort zurücksetzen',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Passwort zurücksetzen</h2>
@@ -113,12 +113,12 @@ export const sendWelcomeEmail = async (email: string, username: string) => {
   const mailOptions = {
     from: EMAIL_FROM,
     to: email,
-    subject: 'Willkommen bei MeinCMS!',
+    subject: 'Willkommen bei Base!',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Willkommen bei MeinCMS, ${username}!</h2>
+        <h2>Willkommen bei Base, ${username}!</h2>
         <p>Deine Email-Adresse wurde erfolgreich verifiziert.</p>
-        <p>Du kannst jetzt alle Features von MeinCMS nutzen.</p>
+        <p>Du kannst jetzt alle Features von Base nutzen.</p>
         <p>
           <a href="${APP_URL}/login"
              style="display: inline-block; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">
@@ -128,7 +128,7 @@ export const sendWelcomeEmail = async (email: string, username: string) => {
       </div>
     `,
     text: `
-Willkommen bei MeinCMS, ${username}!
+Willkommen bei Base, ${username}!
 
 Deine Email-Adresse wurde erfolgreich verifiziert.
 Login: ${APP_URL}/login

@@ -11,7 +11,7 @@ export const AdminSidebar: React.FC = () => {
   return (
     <div className="admin-sidebar">
       <div className="sidebar-header">
-        <h2>MeinCMS</h2>
+        <h2>Base</h2>
         <p className="sidebar-subtitle">Admin Panel</p>
       </div>
 

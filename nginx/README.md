@@ -1,6 +1,6 @@
 # Nginx Reverse Proxy
 
-Nginx fungiert als Reverse Proxy für MeinCMS und bietet HTTP/HTTPS Zugriff.
+Nginx fungiert als Reverse Proxy für Base und bietet HTTP/HTTPS Zugriff.
 
 ## 🌐 Funktionen
 
@@ -32,8 +32,8 @@ nginx/
 
 Die SSL-Zertifikate sind selbstsigniert und gültig für:
 - `localhost`
-- `meincms.local`
-- `*.meincms.local`
+- `base.local`
+- `*.base.local`
 - `127.0.0.1`
 
 **Gültigkeit:** 365 Tage
@@ -110,7 +110,7 @@ proxy_cache_bypass $http_upgrade;
 
 ## 🚀 URLs
 
-Nach dem Start ist MeinCMS erreichbar unter:
+Nach dem Start ist Base erreichbar unter:
 
 - **HTTP**: http://localhost (Redirect zu HTTPS)
 - **HTTPS**: https://localhost

@@ -1,4 +1,4 @@
-# MeinCMS 🚀
+# Base 🚀
 
 Ein modernes, professionelles Content Management System gebaut mit React, Node.js und PostgreSQL. Vollständig containerisiert mit Docker für einfache Entwicklung und Deployment.
 
@@ -117,7 +117,7 @@ npm install
 
 2. PostgreSQL Datenbank erstellen:
 ```bash
-createdb meincms
+createdb base
 ```
 
 3. Backend Umgebungsvariablen konfigurieren:
@@ -233,10 +233,10 @@ Bei Docker-Start werden automatisch vier Test-Benutzer erstellt:
 
 | Rolle     | Email                      | Passwort     |
 |-----------|----------------------------|--------------|
-| Admin     | admin@meincms.local        | admin123     |
-| Operator  | operator@meincms.local     | operator123  |
-| User      | user@meincms.local         | user123      |
-| Guest     | guest@meincms.local        | guest123     |
+| Admin     | admin@base.local        | admin123     |
+| Operator  | operator@base.local     | operator123  |
+| User      | user@base.local         | user123      |
+| Guest     | guest@base.local        | guest123     |
 
 ### Posts
 
@@ -261,7 +261,7 @@ Bei Docker-Start werden automatisch vier Test-Benutzer erstellt:
 ## 📂 Projektstruktur
 
 ```
-MeinCMS/
+Base/
 ├── frontend/                      # React Frontend
 │   ├── src/
 │   │   ├── components/           # React Komponenten
@@ -407,7 +407,7 @@ POST /api/auth/reset-password
 ## 🌐 Nginx Reverse Proxy & SSL
 
 ### Funktionen
-MeinCMS nutzt nginx als Reverse Proxy mit folgenden Features:
+Base nutzt nginx als Reverse Proxy mit folgenden Features:
 - **HTTPS** mit selbstsignierten SSL-Zertifikaten
 - **HTTP zu HTTPS** automatischer Redirect
 - **WebSocket Support** für Vite Hot Module Replacement
@@ -426,7 +426,7 @@ MeinCMS nutzt nginx als Reverse Proxy mit folgenden Features:
 #### Development
 Die mitgelieferten SSL-Zertifikate sind selbstsigniert und gültig für:
 - `localhost`
-- `meincms.local`
+- `base.local`
 - `127.0.0.1`
 
 **Browser-Warnung umgehen:**

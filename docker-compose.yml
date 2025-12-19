@@ -4,9 +4,9 @@ services:
   # PostgreSQL Database
   db:
     image: postgres:16-alpine
-    container_name: meincms_db
+    container_name: base_db
     environment:
-      POSTGRES_DB: meincms
+      POSTGRES_DB: base
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -22,7 +22,7 @@ services:
   # MailHog for email testing
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: meincms_mailhog
+    container_name: base_mailhog
     ports:
       - "8025:8025"  # Web UI
     logging:
@@ -33,12 +33,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: meincms_backend
+    container_name: base_backend
     environment:
       PORT: 3000
       DB_HOST: db
       DB_PORT: 5432
-      DB_NAME: meincms
+      DB_NAME: base
       DB_USER: postgres
       DB_PASSWORD: postgres
       JWT_SECRET: dev-secret-change-in-production
@@ -47,7 +47,7 @@ services:
       SMTP_PORT: 1025
       SMTP_USER: ""
       SMTP_PASS: ""
-      EMAIL_FROM: noreply@meincms.local
+      EMAIL_FROM: noreply@base.local
       APP_URL: https://localhost
     depends_on:
       db:
@@ -62,7 +62,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: meincms_frontend
+    container_name: base_frontend
     environment:
       VITE_API_URL: /api
     depends_on:
@@ -76,7 +76,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    container_name: meincms_nginx
+    container_name: base_nginx
     ports:
       - "80:80"      # HTTP
       - "443:443"    # HTTPS
